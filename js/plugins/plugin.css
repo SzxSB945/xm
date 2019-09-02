@@ -1,0 +1,815 @@
+﻿@charset "utf-8";
+
+.ms-input {
+    display: inline-block;
+    position: relative;
+    clear: both;
+    /* border: 1px solid #e4e4e4; */
+}
+
+.ms-input input {
+    /* float: left; */
+    border: 1px solid #e4e4e4;
+    transition: border-color ease-in-out .15s;
+    color: #333;
+    /* padding-right: 26px; */
+}
+
+.ms-input input:focus {
+    border-color: #aaa;
+}
+
+.ms-input .buttons {
+    height: 26px;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.ms-input  .buttons .button {
+    display: block;
+    width: 26px;
+    height: 26px;
+    line-height: 26px;
+    float: right;
+    cursor: pointer;
+    text-align: center;
+    color: #666;
+    overflow: hidden;
+}
+
+.ms-input .clear-button .iconfont {
+    font-size: 13px;
+    color: #aaa;
+}
+
+.ms-input .clear-button .iconfont:hover {
+    color: #666;
+}
+
+.ms-input .switch-show-hide-button {
+    background: url(/img/icon-eye.png) no-repeat center center;
+}
+
+.ms-input .switch-show-hide-button.hidden {
+    background-image: url(/img/icon-eye-close.png);
+    display: block !important;
+}
+
+.ms-input .switch-lock-button {
+    background: url(/img/icon-lock.png) no-repeat center center;
+}
+
+.ms-input .switch-lock-button.unlock {
+    background-image: url(/img/icon-unlock.png);
+    display: block !important;
+}
+
+.ms-select {
+    display: inline-block;
+}
+
+.ms-select select {
+    border: 1px solid #e4e4e4;
+    transition: border-color ease-in-out .15s;
+    height: 26px;
+    outline: none;
+    color: #333;
+}
+
+.ms-select select:focus {
+    border-color: #aaa;
+}
+
+.ms-ipv4 {
+    display: inline-block;
+}
+
+.ms-ipv4 .wrapper {
+    border: 1px solid #e4e4e4;
+    height: 26px;
+    width: 136px;
+    background-color: #fff;
+    color: #333;
+    line-height: 26px;
+    margin: 0 auto;
+}
+
+.ms-ipv4 .wrapper.readonly {
+    background-color: #ebebe4e4;
+}
+
+.ms-ipv4 input {
+    width: 32px !important;
+    text-align: center;
+    background: none;
+    display: inline-block;
+    padding: 0;
+    border: 0 !important;
+}
+
+.ms-ipv4 .readonly {
+    background-color: #eee;
+}
+
+.ms-ipv4 i {
+    display: inline-block;
+    width: 2px;
+    height: 2px;
+    background-color: #000;
+    vertical-align: bottom;
+    margin-bottom: 8px;
+}
+
+.ms-ipv4-range {
+    width: 292px;
+    height: 26px;
+    position: relative;
+}
+
+.ms-ipv4-range .ms-ipv4:first-child {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 50%;
+    padding-right: 10px;
+}
+
+.ms-ipv4-range .ms-ipv4:last-child {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 50%;
+    padding-left: 10px;
+}
+
+.ms-ipv4-range .line {
+    position: absolute;
+    left: 50%;
+    margin-left: -10px;
+    width: 20px;
+    text-align: center;
+    display: block;
+    line-height: 26px;
+}
+
+.ms-table {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.ms-table .ms-ipv4-range {
+    margin: 0 auto;
+}
+
+.ms-table .table-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    bottom: 60px;
+    border: 1px solid #bcbcbc;
+    overflow: hidden;
+}
+
+.ms-table .table-container .ms-select {
+    width: 100%;
+}
+
+.ms-table .table-container [type="text"],
+.ms-table .table-container select {
+    width: 100%;
+}
+
+.ms-table .table-header {
+    position: absolute;
+    top: 0;
+    z-index: 9;
+}
+
+.ms-table .iconfont:hover {
+    cursor: pointer;
+}
+
+.ms-table .table-header th {
+    position: relative;
+}
+
+.ms-table th .line {
+    position: absolute;
+    top: 0;
+    right: -1px;
+    bottom: -99999px;
+    width: 1px;
+    background-color: #bcbcbc;
+    z-index: 9;
+    margin: 0;
+    padding: 0;
+}
+
+.ms-table .table-body {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 8;
+    width: 100% !important;
+}
+
+.ms-table .bg-shadow {
+    position: absolute;
+    left: 0;
+    top: 100%;
+    right: -3000px;
+    bottom: -3000px;
+    background: url(/img/table-bg.png) repeat;
+}
+
+.ms-table .table-body tbody {
+    background: url(/img/table-bg.png) repeat;
+}
+
+.ms-table .table-body .column-data {
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis;
+}
+
+.ms-table .table {
+    box-shadow: none;
+    margin-bottom: 0;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.ms-table .table>thead>tr>th {
+    border-bottom: none;
+    background-color: #e7e7e7;
+    font-weight: normal;
+        background: #568cca;
+    color: #fff;
+}
+
+.ms-table .table-striped>tbody>tr {
+    /*background: none;*/
+}
+
+.ms-table .table>tbody>tr>td, 
+.ms-table .table>tbody>tr>th, 
+.ms-table .table>tfoot>tr>td, 
+.ms-table .table>tfoot>tr>th, 
+.ms-table .table>thead>tr>td, 
+.ms-table .table>thead>tr>th {
+    text-align: center;
+    border-top: 0;
+    vertical-align: middle;
+    /* border-right: 1px solid #bcbcbc; */
+}
+
+.ms-table .table>tbody>tr>td:last-child, 
+.ms-table .table>tbody>tr>th:last-child, 
+.ms-table .table>tfoot>tr>td:last-child, 
+.ms-table .table>tfoot>tr>th:last-child, 
+.ms-table .table>thead>tr>td:last-child, 
+.ms-table .table>thead>tr>th:last-child {
+    border-right: 0;
+}
+
+.ms-table .buttons .button {
+    padding: 0 6px;
+}
+
+.ms-table .buttons .button {
+    cursor: pointer;
+}
+
+.ms-table .buttons .button:hover {
+    opacity: 0.7;
+}
+
+.ms-table td {
+    height: 36px;
+    line-height: 36px;
+}
+
+.ms-table .table-body td {
+    padding: 0;
+    vertical-align: middle;
+    /* border-bottom: 1px solid #fff; */
+    padding: 0 6px;
+}
+
+.ms-table .table-body tr.active td {
+    background-color: #daeafc;
+    color: #000;
+    /* border-bottom: 1px solid #bcbcbc;
+    border-right: 1px solid #bcbcbc; */
+}
+
+.ms-table .icon {
+    font-size: 16px;
+}
+
+.ms-table .button-container {
+    position: absolute;
+    bottom: 17px;
+    right: 0;
+}
+
+.ms-table .pagination-container {
+    position: absolute;
+    bottom: 17px;
+    left: 0;
+    height: 26px;
+}
+
+.ms-table .pagination {
+    margin: 0;
+}
+
+.ms-table .pagination>li>a {
+    color: #333;
+    border: 1px solid #e7e7e7;
+    height: 26px;
+    line-height: 26px;
+    padding: 0 10px;
+    margin-right: 8px;
+}
+
+.ms-table .pagination>li>a.disabled {
+    color: #aaa;
+    border-color: #e7e7e7 !important;
+    background-color: #fff;
+}
+
+.ms-table .pagination>li>a:hover {
+    border-color: #a0a0a0;
+    background-color: #fff;
+}
+
+.ms-table .pagination>li.active>a {
+    color: #333;
+    background-color: #e7e7e7;
+    border: 1px solid #a0a0a0;
+    outline: none;
+}
+
+.ms-table .pagination .next,
+.ms-table .pagination .prev {
+    background-color: #fff;
+}
+
+.ms-table .page-info {
+    margin: 10px 0; 
+    padding: 6px 12px;
+}
+
+.ms-table .ms-input {
+    width: 100%;
+}
+
+.ms-table .ms-input input {
+    /*border: none;*/
+}
+
+.ms-table .ms-input select {
+    /*border: none;*/
+}
+
+.ms-table .buttons {
+    height: 36px;
+    line-height: 36px;
+}
+
+.ms-header .header {
+    height: 42px;
+    line-height: 42px;
+    background: url(/img/icon-right.png) no-repeat 15px center;
+    padding: 0 30px;
+    border-bottom: 2px solid #888;
+    font-weight: bold;
+    position: relative;
+    margin: 0;
+}
+
+.ms-header .right {
+    position: absolute;
+    right: 30px;
+    height: 42px;
+    top: 0;
+    font-weight: normal;
+}
+
+.ms-radio {
+    display: inline-block;
+}
+
+.ms-table2 {
+    width: 100%;
+    height: 100%;
+}
+
+.ms-table2 .panel {
+    box-shadow: none;
+    border: 1px solid #bcbcbc;
+    border-radius: 0;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    height: 100%;
+}
+
+.ms-table2 .panel .panel-heading {
+    height: 30px;
+    line-height: 30px;
+    padding: 0 10px;
+    background-color: #f2f2f2;
+}
+
+.ms-table2 .panel .panel-body {
+    position: absolute;
+    top: 30px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 15px;
+    overflow: hidden;
+}
+
+.ms-table2 .panel table {
+    table-layout: fixed;
+    width: 100%;
+    background: url(/img/table-bg2.png) repeat;
+}
+
+.ms-table2 .bg-table {
+    position: absolute !important;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.ms-table2 .panel td {
+    padding: 10px;
+    vertical-align: middle;
+}
+
+.ms-table2 .panel td, 
+.ms-table2 .panel th {
+    text-align: center;
+    border-top: 0;
+    border-right: 1px solid #bcbcbc;
+}
+
+.ms-table2 .panel tr td:last-child {
+    border-right: 0;
+}
+
+/* .ms-table2 .panel td span {
+    margin-right: 6px;
+} */
+
+.ms-table2 .button-container .remove {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+}
+
+.ms-table2 .panel td .row {
+    line-height: 26px;
+    margin: 0;
+}
+
+.ms-table2 .panel td .row .col:first-child {
+    text-align: center;
+    padding: 0;
+}
+
+.ms-table2 .panel td .row .col:last-child {
+    padding-left: 0;
+}
+
+.ms-table2 .panel td .ms-input,
+.ms-table2 .panel td input[type="text"] {
+    width: 100%;
+}
+
+.ms-table2 .panel .table-container {
+    position: absolute;
+    left: 15px;
+    top: 15px;
+    right: 40px;
+    bottom: 15px;
+    border: 1px solid #bcbcbc;
+    overflow-y: auto;
+}
+
+.ms-table2 .panel .button-container {
+    position: absolute;
+    width: 40px;
+    right: 0;
+    top: 15px;
+    text-align: center;
+    line-height: 46px;
+    user-select: none;
+}
+
+.ms-table2 .panel .button-container .button {
+    cursor: pointer;
+}
+
+.ms-input-range {
+    width: 100%;
+    height: 26px;
+    position: relative;
+}
+
+.ms-input-range .ms-input input {
+    padding: 2px 4px;
+    width: 100%;
+}
+
+.ms-input-range .ms-input:first-child {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 50%;
+    padding-right: 10px;
+}
+
+.ms-input-range .ms-input:last-child {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 50%;
+    padding-left: 10px;
+}
+
+.ms-input-range .line {
+    position: absolute;
+    left: 50%;
+    margin-left: -10px;
+    width: 20px;
+    text-align: center;
+    display: block;
+    line-height: 26px;
+}
+
+.ms-checkbox .checkbox-inline {
+    /* margin-top: 6px; */
+    line-height: initial;
+}
+
+.ms-datetime {
+    position: relative;
+    width: 100%;
+}
+
+.ms-datetime input {
+    width: 100%;
+    padding-right: 32px;
+    color: #333;
+}
+
+.ms-datetime .time-btn {
+    position: absolute;
+    right: 9px;
+    top: 6px;
+    width: 14px;
+    height: 14px;
+    background: url(/img/icon-calendar.png?__sprite) no-repeat center;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.ms-datetime > div {
+    width: 100%;
+    position: relative;
+}
+
+.ms-datetime-range {
+    position: relative;
+    width: 100%;
+    height: 26px;
+    line-height: 26px;
+}
+
+.ms-datetime-range .ms-datetime:first-child {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 50%;
+    padding-right: 10px;
+}
+
+.ms-datetime-range .ms-datetime:last-child {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 50%;
+    padding-left: 10px;
+}
+
+.ms-datetime-range .line {
+    position: absolute;
+    left: 50%;
+    margin-left: -10px;
+    width: 20px;
+    text-align: center;
+    display: block;
+    line-height: 26px;
+}
+
+/* 输入选择控件开始 */
+.ms-input-select-style {
+    position: relative;
+    display: inline-block;
+    color: #333;
+    width: 100%;
+}
+
+.ms-input-select-style .loading {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9;
+    background: #fff;
+    opacity: 0.6;
+    text-align: center;
+    line-height: 26px;
+}
+
+.ms-input-select-style .loading img {
+    width: 16px;
+    height: 16px;
+}
+
+.ms-input-select-style .button {
+    position: absolute;
+    height: 26px;
+    line-height: 26px;
+    padding: 0 4px;
+    cursor: pointer;
+}
+
+.ms-input-select-style .button:hover .icon:last-child {
+    opacity: 0.6;
+}
+
+.ms-input-select-style .left .icon {
+    display: inline-block;
+}
+
+.ms-input-select-style input {
+    padding-left: 40px;
+    width: 100%;
+}
+
+.ms-input-select-button-dropdown-mask {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 8;
+    background-color: rgba(255, 255, 255, 0);
+}
+
+.ms-input-select-button-dropdown {
+    z-index: 9;
+}
+
+/* .ms-input-select-button-dropdown {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9;
+    background-color: rgba(255, 255, 255, 0);
+} */
+
+.ms-input-select-button-dropdown ul {
+    list-style: none;
+    padding: 0;
+    background-color: #fff;
+    border: 1px solid #e4e4e4;
+    border-top: 0;
+    position: absolute;
+    z-index: 9;
+}
+
+.ms-input-select-button-dropdown li {
+    height: 26px;
+    line-height: 26px;
+    padding: 0 4px;
+}
+
+.ms-input-select-button-dropdown li:hover {
+    cursor: pointer;
+    background-color: #f0f0f0;
+}
+
+.ms-input-select-button-dropdown li span {
+    float: left;
+    font-size: 13px;
+    color: #888;
+}
+.ms-input-select-button-dropdown li .icon {
+    margin-right: 4px;
+}
+
+.ms-input-select-dialog-style .ms-search-panel {
+    margin: 20px;
+}
+
+.ms-input-select-dialog-style .table-container {
+    position: absolute;
+    left: 20px;
+    top: 88px;
+    right: 20px;
+    bottom: 20px;
+    border: 1px solid #bcbcbc;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.ms-input-select-dialog-style table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+.ms-input-select-dialog-style td {
+    height: 36px;
+    line-height: 36px;
+    text-align: left;
+    vertical-align: middle;
+    padding-left: 26px;
+}
+
+.ms-input-select-dialog-style .table-container .inner-wrapper {
+    position: absolute; 
+    left: 0; 
+    right: 0; 
+    top: 0; 
+    bottom: 0; 
+    overflow-y: auto;
+}
+
+.ms-input-select-dialog-style .table-container .l {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background-color: #bcbcbc;
+    z-index: 9;
+}
+
+.ms-input-select-dialog-style .table-container .l1 {
+    left: 20%;
+}
+
+.ms-input-select-dialog-style .table-container .l2 {
+    left: 40%;
+}
+
+.ms-input-select-dialog-style .table-container .l3 {
+    left: 60%;
+}
+
+.ms-input-select-dialog-style .table-container .l4 {
+    left: 80%;
+}
+
+.ms-input-select-dialog-style .table-container .checkbox-row {
+    padding: 0;
+    margin: 0;
+}
+
+.ms-input-select-dialog-style .table-container .checkbox-container {
+    height: 36px;
+    line-height: 36px;
+    width: 20%;
+    padding: 0;
+    padding-left: 20px;
+}
+
+.ms-input-select-dialog-style .table-container .checkbox-container:nth-child(5n) {
+    border-right: 0;
+}
+
+.ms-input-select-dialog-style .table-container,
+.ms-input-select-dialog-style .table-container .ms-checkbox {
+    background: url(/img/table-bg.png) repeat;
+}
+
+.ms-input-select-dialog-style .checkbox-inline {
+    line-height: 20px;
+}
+/* 输入选择控件结束 */

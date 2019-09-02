@@ -1,0 +1,574 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>表单构建器</title>
+
+    <link href="/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- 这里引用其他css文件 -->
+    <link href="/form-builder/js/codemirror/codemirror.css" rel="stylesheet" />
+    <link href="css/builder.css" rel="stylesheet" />
+
+    <!--[if lt IE 9]>
+        <script type="text/javascript" src="js/html5shiv.min.js"></script>
+        <script type="text/javascript" src="js/respond.min.js"></script>
+    <![endif]-->
+
+    <!--[if lt IE 8]>
+        <script type="text/javascript" src="js/lib/json2.js"></script>
+    <![endif]-->
+</head>
+
+<body id="app" ms-controller="app" class="ms-controller">
+    <div class="container">
+        <div class="page-header">
+            <h1>表单构建器 <small>v0.1.0</small></h1>
+        </div>
+
+        <div class="row" style="display: none;">
+            <h2>选择表单</h2>
+        </div>
+
+        <div class="row template-tool-header">
+            <div class="btn btn-primary pull-left" ms-click="@createTemplate" style="margin-right: 12px;">新建表单</div>
+            <div class="dropdown pull-left">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="true">
+                    加载表单
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    <li ms-for="template in @templates" ms-click="@loadTemplate(template)">
+                        <a href="#"><span ms-html="@template.templateName"></span> - {{@template.category ? @template.category : "未分类"}}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="row">
+            <h3>基本配置</h3>
+        </div>
+
+        <div class="row">
+            <form class="form-horizontal">
+                <div class="row">
+                    <label class="col col-md-2 control-label">表单ID：</label>
+                    <div class="col col-md-4">
+                        <input type="text" class="form-control" readonly="readonly" ms-duplex="@template.templateId">
+                    </div>
+                    <label class="col col-md-2 control-label">表单名：</label>
+                    <div class="col col-md-4">
+                        <input type="text" class="form-control" ms-duplex="@template.templateName">
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col col-md-2 control-label">表单分类：</label>
+                    <div class="col col-md-4">
+                        <input type="text" class="form-control" ms-duplex="@template.category">
+                    </div>
+                    <label class="col col-md-2 control-label">隐藏取消按钮：</label>
+                    <div class="col col-md-4">
+                        <input type="checkbox" ms-duplex-checked="@template.hideCancelButton" style="margin-top: 10px;">
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="row">
+            <h3>详细配置</h3>
+        </div>
+
+        <div class="row">
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#template-items" aria-controls="template-items" role="tab"
+                        data-toggle="tab">表单条目列表</a></li>
+                <li role="presentation"><a href="#template-script" aria-controls="template-script" role="tab"
+                        data-toggle="tab">表单脚本</a></li>
+                <li role="presentation"><a href="#template-style" aria-controls="template-style" role="tab" data-toggle="tab">表单样式</a></li>
+                <li role="presentation"><a href="#template" aria-controls="template" role="tab" data-toggle="tab">表单模板</a></li>
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="template-items">
+                    <div class="row">
+                        <div class="btn btn-default add-template-item" ms-click="@addTemplateItem">增加表单条目</div>
+                    </div>
+
+                    <div class="row text-center" ms-if="!@template.items.length">
+                        暂无表单条目
+                    </div>
+
+                    <div class="panel panel-primary" ms-for="item in @template.items">
+                        <div class="panel-heading">表单条目<div class="btn btn-default btn-xs pull-right" ms-click="@removeTemplateItem(item)">移除</div>
+                        </div>
+                        <div class="panel-body">
+                            <form class="form-horizontal">
+                                <h4>通用配置</h4>
+                                <div class="row">
+                                    <label class="col col-md-2 control-label">条目标题：</label>
+                                    <div class="col col-md-10">
+                                        <input type="text" class="form-control" ms-duplex="@item.itemTitle">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label class="col col-md-2 control-label">弹窗提示信息：</label>
+                                    <div class="col col-md-10">
+                                        <textarea class="form-control" ms-duplex="@item.alertWinInfo"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <label class="col col-md-2 control-label">行尾提示信息：</label>
+                                    <div class="col col-md-10">
+                                        <textarea class="form-control" ms-duplex="@item.endOfLineInfo"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <label class="col col-md-2 control-label">更多选项：</label>
+                                    <div class="col col-md-2">
+                                        <label class="control-label"><input type="checkbox" ms-duplex-checked="@item.isMore">属于更多选项</label>
+                                    </div>
+                                    <div class="col col-md-2">
+                                        <label class="control-label"><input type="checkbox" ms-duplex-checked="@item.isMustField">必填项</label>
+                                    </div>
+                                </div>
+
+                                <h4>控件配置</h4>
+                                <div class="row">
+                                    <div class="dropdown">
+                                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                            增加控件
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                            <li ms-for="control in controls" ms-click="@addControl(item, control.name, control.title)"><a
+                                                    href="javascript:">{{@control.title}}</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="panel panel-default" ms-for="control in item.rawControls">
+                                        <div class="panel-heading">{{@control.title}}<div class="btn btn-default btn-xs pull-right"
+                                                ms-click="@removeControl(item, control)">移除</div>
+                                        </div>
+                                        <div class="panel-body">
+                                            <span ms-html="@control.content"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="template-script">
+                    <div class="row">
+                        <div class="col col-md-12">
+                            <p class="well">
+                                脚本中可用参数：form（表格实例对象）。可使用 <span class="text-primary">form.onSubmit = function(fields) {}</span> 回调覆盖默认的提交动作。
+                                fields参数里面存储的是各个字段的值，获取形式是：fields.控件id
+                            </p>
+                        </div>
+                        <div class="col col-md-12">
+                            <textarea class="form-control" rows="30"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="template-style">
+                    <div class="row"><textarea class="form-control" rows="20"></textarea></div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="template">
+                    <div class="row"><textarea class="form-control" rows="20"></textarea></div>
+                    <div class="row">
+                        <div class="btn btn-primary pull-right" ms-click="@generateTemplate">生成表单模板</div>
+                        <!-- <div class="btn btn-default pull-right" ms-click="@parseTemplate" style="margin-right: 6px;">加载表单模板</div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-btns">
+            <div class="btn btn-default add-template-item" ms-click="@addTemplateItem">增加表单条目</div>
+        </div>
+    </div>
+
+    <!-- 文本输入控件 -->
+    <script type="text/html" id="ms-input-tpl">
+        <div>
+            <h5>控件属性配置</h5>
+            <div class="row">
+                <label class="col col-md-2 control-label">控件id：</label>
+                <div class="col col-md-4">
+                    <input type="text" class="form-control" ms-duplex="@controlDefine.id">
+                </div>
+                <label class="col col-md-2 control-label">控件name：</label>
+                <div class="col col-md-4">
+                    <input type="text" class="form-control" ms-duplex="@controlDefine.name">
+                </div>
+            </div>
+            
+            <div class="row">
+                <label class="col col-md-2 control-label">校验规则：</label>
+                <div class="col col-md-4">
+                    <input type="text" class="form-control" ms-duplex="@controlDefine.validate">
+                </div>
+            </div>
+
+            <div class="row">
+                <label class="col col-md-2 control-label">自定义校验规则：</label>
+                <div class="col col-md-10">
+                    <textarea class="form-control" ms-duplex="@controlDefine.validateFunction"></textarea>
+                </div>
+            </div>
+
+            <div class="row">
+                <label class="col col-md-2 control-label">自定义校验未通过提示信息：</label>
+                <div class="col col-md-10">
+                    <input class="form-control" ms-duplex="@controlDefine.validateMsg">
+                </div>
+            </div>
+
+            <h5>控件数据保存接口</h5>
+
+            <div class="row">
+                <label class="col col-md-2 control-label">method：</label>
+                <div class="col col-md-4">
+                    <input type="text" class="form-control" ms-duplex="@controlDefine.reqParam.method">
+                </div>
+                <label class="col col-md-2 control-label">line_id：</label>
+                <div class="col col-md-4">
+                    <input type="text" class="form-control" ms-duplex="@controlDefine.reqParam.line_id">
+                </div>
+            </div>
+            <div class="row">
+                <label class="col col-md-2 control-label">id：</label>
+                <div class="col col-md-4">
+                    <input type="text" class="form-control" ms-duplex="@controlDefine.reqParam.id">
+                </div>
+            </div>
+
+            <h5>控件初始数据</h5>
+            <div class="row">
+                <label class="col col-md-2 control-label">文本内容：</label>
+                <div class="col col-md-10">
+                    <input type="text" class="form-control" ms-duplex="@controlDefine.value">
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <!-- select控件 -->
+    <script type="text/html" id="ms-select-tpl">
+        <div>
+            <h5>控件属性配置</h5>
+            <div class="row">
+                <label class="col col-md-2 control-label">控件id：</label>
+                <div class="col col-md-4">
+                    <input type="text" class="form-control" ms-duplex="@controlDefine.id">
+                </div>
+                <label class="col col-md-2 control-label">控件name：</label>
+                <div class="col col-md-4">
+                    <input type="text" class="form-control" ms-duplex="@controlDefine.name">
+                </div>
+            </div>
+
+            <h5>控件数据保存接口</h5>
+
+            <div class="row">
+                <label class="col col-md-2 control-label">method：</label>
+                <div class="col col-md-4">
+                    <input type="text" class="form-control" ms-duplex="@controlDefine.reqParam.method">
+                </div>
+                <label class="col col-md-2 control-label">line_id：</label>
+                <div class="col col-md-4">
+                    <input type="text" class="form-control" ms-duplex="@controlDefine.reqParam.line_id">
+                </div>
+            </div>
+            <div class="row">
+                <label class="col col-md-2 control-label">id：</label>
+                <div class="col col-md-4">
+                    <input type="text" class="form-control" ms-duplex="@controlDefine.reqParam.id">
+                </div>
+            </div>
+
+            <h5>控件初始数据</h5>
+            <div class="row">
+                <div class="row">是否显示请选择：<input type="checkbox" ms-duplex-checked="@controlDefine.defaultSelectOption"></div>
+                <div class="row">
+                    <div class="btn btn-sm btn-default" ms-click="@addOption">增加数据</div>
+                </div>
+            </div>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <td style="width: 30%;">文本</td>
+                        <td style="width: 30%;">选项值</td>
+                        <td style="width: 20%;">默认选中</td>
+                        <td style="width: 20%;">操作</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ms-if="!controlDefine.options.length">
+                        <td>暂无数据</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr ms-for="option in controlDefine.options">
+                        <td ms-if="!option.isEditing">
+                            {{@option.text}}
+                        </td>
+                        <td ms-if="!option.isEditing">
+                                {{@option.value}}
+                        </td>
+                        <td ms-if="option.isEditing">
+                            <input class="form-control input-sm" type="text" ms-duplex="@option.text">
+                        </td>
+                        <td ms-if="option.isEditing">
+                            <input class="form-control input-sm" type="text" ms-duplex="@option.value">
+                        </td>
+                        <td ms-if="!option.isEditing">
+                            {{@option.selected == 'true' ? '是' : '否' }}
+                        </td>
+                        <td ms-if="option.isEditing">
+                            <select class="form-control input-sm" ms-duplex="@option.selected">
+                                <option value="true">是</option>
+                                <option value="false">否</option>
+                            </select>
+                        </td>
+                        <td>
+                            <div ms-if="@option.isEditing" class="btn btn-default btn-sm" style="margin-right: 6px;" ms-click="@saveOption(option)">确定</div>
+                            <div ms-if="!option.isEditing" class="btn btn-default btn-sm" style="margin-right: 6px;" ms-click="@editOption(option)">编辑</div>
+                            <div class="btn btn-danger btn-sm" ms-click="@removeOption(option)">移除</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </script>
+
+    <!-- radio控件 -->
+    <script type="text/html" id="ms-radio-tpl">
+        <div>
+            <h5>控件属性配置</h5>
+            <div class="row">
+                <label class="col col-md-2 control-label">控件id：</label>
+                <div class="col col-md-4">
+                    <input type="text" class="form-control" ms-duplex="@controlDefine.id">
+                </div>
+                <label class="col col-md-2 control-label">控件name：</label>
+                <div class="col col-md-4">
+                    <input type="text" class="form-control" ms-duplex="@controlDefine.name">
+                </div>
+            </div>
+
+            <h5>控件数据保存接口</h5>
+
+            <div class="row">
+                <label class="col col-md-2 control-label">method：</label>
+                <div class="col col-md-4">
+                    <input type="text" class="form-control" ms-duplex="@controlDefine.reqParam.method">
+                </div>
+                <label class="col col-md-2 control-label">line_id：</label>
+                <div class="col col-md-4">
+                    <input type="text" class="form-control" ms-duplex="@controlDefine.reqParam.line_id">
+                </div>
+            </div>
+            <div class="row">
+                <label class="col col-md-2 control-label">id：</label>
+                <div class="col col-md-4">
+                    <input type="text" class="form-control" ms-duplex="@controlDefine.reqParam.id">
+                </div>
+            </div>
+
+            <h5>控件初始数据</h5>
+            <div class="row">
+                <div class="btn btn-sm btn-default" ms-click="@addOption">增加数据</div>
+            </div>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <td style="width: 30%;">文本</td>
+                        <td style="width: 30%;">选项值</td>
+                        <td style="width: 20%;">默认选中</td>
+                        <td style="width: 20%;">操作</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ms-if="!controlDefine.options.length">
+                        <td>暂无数据</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr ms-for="option in controlDefine.options">
+                        <td ms-if="!option.isEditing">
+                            {{@option.text}}
+                        </td>
+                        <td ms-if="!option.isEditing">
+                                {{@option.value}}
+                        </td>
+                        <td ms-if="option.isEditing">
+                            <input class="form-control input-sm" type="text" ms-duplex="@option.text">
+                        </td>
+                        <td ms-if="option.isEditing">
+                            <input class="form-control input-sm" type="text" ms-duplex="@option.value">
+                        </td>
+                        <td ms-if="!option.isEditing">
+                            {{@option.selected == 'true' ? '是' : '否' }}
+                        </td>
+                        <td ms-if="option.isEditing">
+                            <select class="form-control input-sm" ms-duplex="@option.selected">
+                                <option value="true">是</option>
+                                <option value="false">否</option>
+                            </select>
+                        </td>
+                        <td>
+                            <div ms-if="@option.isEditing" class="btn btn-default btn-sm" style="margin-right: 6px;" ms-click="@saveOption(option)">确定</div>
+                            <div ms-if="!option.isEditing" class="btn btn-default btn-sm" style="margin-right: 6px;" ms-click="@editOption(option)">编辑</div>
+                            <div class="btn btn-danger btn-sm" ms-click="@removeOption(option)">移除</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </script>
+
+    <!-- checkbox控件 -->
+    <script type="text/html" id="ms-checkbox-tpl">
+        <div>
+            <h5>控件属性配置</h5>
+            <div class="row">
+                <label class="col col-md-2 control-label">控件id：</label>
+                <div class="col col-md-4">
+                    <input type="text" class="form-control" ms-duplex="@controlDefine.id">
+                </div>
+                <label class="col col-md-2 control-label">控件name：</label>
+                <div class="col col-md-4">
+                    <input type="text" class="form-control" ms-duplex="@controlDefine.name">
+                </div>
+            </div>
+    
+            <h5>控件数据保存接口</h5>
+    
+            <div class="row">
+                <label class="col col-md-2 control-label">method：</label>
+                <div class="col col-md-4">
+                    <input type="text" class="form-control" ms-duplex="@controlDefine.reqParam.method">
+                </div>
+                <label class="col col-md-2 control-label">line_id：</label>
+                <div class="col col-md-4">
+                    <input type="text" class="form-control" ms-duplex="@controlDefine.reqParam.line_id">
+                </div>
+            </div>
+            <div class="row">
+                <label class="col col-md-2 control-label">id：</label>
+                <div class="col col-md-4">
+                    <input type="text" class="form-control" ms-duplex="@controlDefine.reqParam.id">
+                </div>
+            </div>
+    
+            <h5>控件初始数据</h5>
+            <div class="row">
+                <div class="btn btn-sm btn-default" ms-click="@addOption">增加数据</div>
+            </div>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <td style="width: 30%;">文本</td>
+                        <td style="width: 30%;">选项值</td>
+                        <td style="width: 20%;">默认选中</td>
+                        <td style="width: 20%;">操作</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ms-if="!controlDefine.options.length">
+                        <td>暂无数据</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+    
+                    <tr ms-for="option in controlDefine.options">
+                        <td ms-if="!option.isEditing">
+                            {{@option.text}}
+                        </td>
+                        <td ms-if="!option.isEditing">
+                                {{@option.value}}
+                        </td>
+                        <td ms-if="option.isEditing">
+                            <input class="form-control input-sm" type="text" ms-duplex="@option.text">
+                        </td>
+                        <td ms-if="option.isEditing">
+                            <input class="form-control input-sm" type="text" ms-duplex="@option.value">
+                        </td>
+                        <td ms-if="!option.isEditing">
+                            {{@option.selected == 'true' ? '是' : '否' }}
+                        </td>
+                        <td ms-if="option.isEditing">
+                            <select class="form-control input-sm" ms-duplex="@option.selected">
+                                <option value="true">是</option>
+                                <option value="false">否</option>
+                            </select>
+                        </td>
+                        <td>
+                            <div ms-if="@option.isEditing" class="btn btn-default btn-sm" style="margin-right: 6px;" ms-click="@saveOption(option)">确定</div>
+                            <div ms-if="!option.isEditing" class="btn btn-default btn-sm" style="margin-right: 6px;" ms-click="@editOption(option)">编辑</div>
+                            <div class="btn btn-danger btn-sm" ms-click="@removeOption(option)">移除</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </script>
+    
+    <!-- 内容自定义控件 -->
+    <script type="text/html" id="ms-custom-tpl">
+        <div>
+            <h5>控件属性配置</h5>
+            <div class="row">
+                <label class="col col-md-2 control-label">控件id：</label>
+                <div class="col col-md-4">
+                    <input type="text" class="form-control" ms-duplex="@controlDefine.id">
+                </div>
+                <label class="col col-md-2 control-label">控件name：</label>
+                <div class="col col-md-4">
+                    <input type="text" class="form-control" ms-duplex="@controlDefine.name">
+                </div>
+            </div>
+
+            <div class="row">
+                <label class="col col-md-2 control-label">自定义控件内容：</label>
+                <div class="col col-md-10">
+                    <textarea class="form-control" rows="10" ms-duplex="@controlDefine.content"></textarea>
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/javascript" src="/js/config.js"></script>
+    <script type="text/javascript" src="/js/lib/LAB.min.js"></script>
+    <script type="text/javascript" src="/js/load.js"></script>
+    <script type="text/javascript">
+        // 这里引用其他js文件
+        $LAB
+            .queueScript("/form-builder/js/codemirror/codemirror.js")
+            .queueScript("/form-builder/js/codemirror/javascript.js")
+            .queueScript("/form-builder/js/codemirror/css.js")
+            .queueWait()
+            .queueScript("js/builder.js")
+            .runQueue();
+    </script>
+</body>
+
+</html>

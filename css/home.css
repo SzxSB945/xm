@@ -1,0 +1,156 @@
+﻿body {
+    background-color: transparent;
+}
+
+.left {
+    position: absolute;
+    background: #333333;
+    bottom: 0px;
+    left: 0;
+    min-width: 300px;
+    top: 0;
+}
+
+.right {
+    position: absolute;
+    left: 300px;
+    top: 0;
+    bottom: 3px;
+    right: 0;
+}
+
+a {
+    color: #fff;
+    text-decoration: none;
+    background: none;
+}
+
+    a:link {
+        text-decoration: none;
+    }
+
+    a:visited {
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: none;
+        color: #9fc5ce;
+    }
+
+    a-hover{
+        text-decoration: none;
+        color: #9fc5ce;
+    }
+
+    a:active {
+        text-decoration: none;
+    }
+
+.ve-menu-pc {
+    color: #fff;
+}
+
+iframe {
+    height: 100%;
+    width: 100%;
+    border: 0;
+}
+
+.one-menu {
+    color: #fff;
+    height: 48px;
+    line-height: 48px;
+    position: relative;
+}
+
+    .one-menu .color {
+        position: absolute;
+        height: 48px;
+        left: 0;
+        width: 5px;
+    }
+
+    .one-menu .icon {
+        position: absolute;
+        height: 48px;
+        left: 5px;
+        width: 65px;
+        text-align: center;
+    }
+
+    .one-menu .text {
+        position: absolute;
+        left: 70px;
+        right: 50px;
+        width: 180px;
+    }
+
+    .one-menu .direction {
+        position: absolute;
+        right: 0;
+        left: 250px;
+        width: 50px;
+        height: 48px;
+    }
+
+    .one-menu .border {
+        height: 1px;
+        background-image: url('../modules/web/img/bottom-border.png');
+        background-size: 100% 100%;
+        width: 300px;
+        position: absolute;
+        bottom: 0;
+    }
+
+    .one-menu:hover {
+        background: #424242;
+    }
+
+    .one-menu-hover{
+        background: #424242;
+    }
+
+a {
+    cursor: pointer;
+}
+
+.one-menu a:hover .color {
+    background: #126ed5;
+}
+
+.one-menu a:active .color {
+    background: #126ed5;
+}
+
+.color-hover {
+    background: #126ed5;
+}
+
+.two-menu {
+    color: #fff;
+    position: relative;
+    height: 48px;
+    height: 320px;
+}
+
+    .two-menu ul {
+        padding-left: 90px;
+        margin-bottom: 0px;
+    }
+
+        .two-menu ul li {
+            height: 40px;
+            line-height: 40px;
+            position: relative;
+        }
+
+            .two-menu ul li .li-border {
+                background-image: url('../modules/web/img/bottom-border.png');
+                background-size: 100% 100%;
+                height: 1px;
+                position: absolute;
+                bottom: 0px;
+                left: -90px;
+                right: 0;
+            }

@@ -1,0 +1,11 @@
+<div class="ms-checkbox">
+    <div class="row checkbox-row">
+        <div class="col-xs-3 checkbox-container" ms-for="(index, option) in @options" style="white-space: nowrap;">
+            <label class="checkbox-inline">
+                <input 
+                    ms-attr="{name: @name, value: @option.value }" 
+                    type="checkbox" ms-duplex="@value" data-duplex-changed="@handleChange(@option, @index, $event)" /><span ms-html="@option.text"></span>
+            </label>
+        </div>
+    </div>
+</div>

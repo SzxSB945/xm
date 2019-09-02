@@ -1,0 +1,10 @@
+<div class="ms-ext-group-select ms-input-select-style" ms-attr="{id: @_id}">
+    <div class="loading" ms-if="isLoading"><img src="/img/loading.gif" /></div>
+    <div class="button" ms-click="@toggleButtonDropdown">
+        <span class="icon iconfont icon-edit" ms-if="@currentMode == 0"></span>
+        <span class="icon iconfont icon-search" ms-if="@currentMode == 1"></span>
+        <span class="icon iconfont icon-caret"></span>
+    </div>
+    
+    <input type="text" ms-duplex="@value" ms-click="@onClickInput()" ms-input="@onInput()">
+</div>

@@ -1,0 +1,33 @@
+<div ms-attr="{id: @$id}" class="ms-table2">
+    <div class="panel">
+        <div ms-if="!@hideHead" class="panel-heading">{{title}}</div>
+        <div class="panel-body">
+            <div class="table-container">
+                <table class="bg-table">
+                    <tr ms-for="(index, row) in @rowData2">
+                        <td ms-for="(index2, data) in @row"></td>
+                    </tr>
+                </table>
+
+                <table>
+                    <tr ms-for="(index, row) in @rowData2">
+                        <td ms-for="(index2, data) in @row">
+                            <div class="row">
+                                <div class="col col-xs-2">
+                                    <span>{{@data.id}}</span>
+                                </div>
+                                <div class="col col-xs-10">
+                                    <wbr ms-widget="{is: 'ms-input', name: @data.id, value: @data.value, handleChange: @handleChange, clearButton: true}" />
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="button-container" ms-css="{height: @rowData2.length * 46 + 'px'}">
+                <span class="button iconfont icon-tianjia" ms-click="@addRow"></span>
+                <span class="button iconfont icon-yichu remove" ms-if="@rowData2.length > 1" ms-click="@removeRow"></span>
+            </div>
+        </div>
+    </div>
+</div>

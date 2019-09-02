@@ -1,0 +1,48 @@
+@charset "utf-8";
+
+body {
+    overflow-y: scroll;
+}
+
+.container {
+    padding-bottom: 50px;
+}
+
+.row {
+    margin: 6px 0;
+}
+
+h4 {
+    border-left: 3px solid #337ab7;
+    padding-left: 10px;
+}
+
+.table>tbody>tr>td {
+    vertical-align: middle;
+}
+
+.CodeMirror {
+    border: 1px solid #ddd;
+}
+
+.template-tool-header {
+    padding: 10px;
+    background-color: #eee;
+    border-radius: 4px;
+}
+
+.bottom-btns {
+    position: fixed;
+    bottom: 0;
+    padding: 10px;
+    background-color: #eee;
+    width: 100%;
+    left: 0;
+    right: 0;
+    text-align: center;
+    display: none;
+}
+
+.ms-controller{
+    visibility: hidden
+ }

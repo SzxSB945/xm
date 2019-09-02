@@ -1,0 +1,19 @@
+<div ms-class="@wrapperClass" ms-attr="{id: @_id}">
+    <div class="wrapper" ms-class="{readonly: @readonly}">
+        <input type="text" class="ip-segment-1" maxlength="3" ms-keydown="@onKeyDown($event, 'ip1', 'ip-segment-2')" 
+            ms-keyup="@onKeyUp($event, 'ip1', 'ip-segment-2')" ms-duplex="@ip1"
+            ms-attr="{readonly: @readonly}">
+        <i></i>
+        <input type="text" class="ip-segment-2"  maxlength="3" ms-keydown="@onKeyDown($event, 'ip2', 'ip-segment-3')" 
+            ms-keyup="@onKeyUp($event, 'ip2', 'ip-segment-3')" ms-duplex="@ip2"
+            ms-attr="{readonly: @readonly}">
+        <i></i>
+        <input type="text" class="ip-segment-3"  maxlength="3" ms-keydown="@onKeyDown($event, 'ip3', 'ip-segment-4')" 
+            ms-keyup="@onKeyUp($event, 'ip3', 'ip-segment-4')" ms-duplex="@ip3"
+            ms-attr="{readonly: @readonly}">
+        <i></i>
+        <input type="text" class="ip-segment-4"  maxlength="3" ms-keydown="@onKeyDown($event, 'ip4')"
+            ms-keyup="@onKeyUp($event, 'ip4')" ms-duplex="@ip4"
+            ms-attr="{readonly: @readonly}">
+    </div>
+</span>

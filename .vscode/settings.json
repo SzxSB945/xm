@@ -1,0 +1,9 @@
+{
+    "svn.path": "d:\\Program Files\\VisualSVN Server\\bin\\svn.exe",
+    "files.exclude": {
+        "**/output": true
+    },
+    "search.exclude": {
+        "**/output": true
+    }
+}

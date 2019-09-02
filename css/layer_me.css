@@ -1,0 +1,47 @@
+﻿.layui-layer-dialog .layui-layer-content {
+    line-height: 150px;
+    padding: 0;
+    text-align: center;
+    min-height: 150px;
+    color: #568cca;
+    font-size: 16px;
+    letter-spacing: 1px;
+    background: #fff;
+}
+
+.layui-layer-title {
+    padding-right: 20px;
+    background: #568cca;
+    padding-left: 20px;
+    color: #fff;
+    text-align: center;
+    width: 100px;
+    height: 38px;
+    line-height: 38px;
+    font-size: 16px;
+}
+
+.layui-layer-dialog {
+    background: #eeeeee;
+}
+
+.layui-layer-btn {
+    background: #ffffff;
+    padding-bottom: 30px;
+}
+
+    .layui-layer-btn .layui-layer-btn0 {
+        background-color: #568cca !important;
+        border: 0 !important;
+        width: 80px !important;
+        margin-right: 50px !important;
+        color: #ffffff;
+    }
+
+    .layui-layer-btn .layui-layer-btn1 {
+        background-color: #999999 !important;
+        border: 0 !important;
+        width: 80px !important;
+        margin-left: 50px !important;
+        color: #ffffff;
+    }

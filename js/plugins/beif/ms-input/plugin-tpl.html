@@ -1,0 +1,21 @@
+<div class="ms-input">
+    <input ms-attr="{ type: @inputType, id: @_id, disabled: @inputDisabled, name: @name, 'data-validate': @validate}" 
+        ms-duplex="@value" ms-input="@handleInput($event)" autocomplete="off">
+    <div class="buttons">
+        <span class="button switch-show-hide-button" ms-if="@hideButton" 
+            ms-class="@hideButtonClass" ms-click="@switchShowHide()"></span>
+            
+        <span class="button switch-lock-button" ms-if="@lockButton" 
+            ms-class="@lockButtonClass" ms-click="@switchLock()"></span>
+            
+        <span class="button keyboard-button" ms-if="@keyboardButton" 
+            ms-class="@keyboardButtonClass" ms-click="@switchKeyboard($event)">
+            <i class="iconfont icon-jianpan"></i>
+        </span>
+            
+        <span class="button clear-button" ms-if="@showClearButton" 
+            ms-click="@clearValue()">
+            <i class="iconfont icon-shanchu4"></i>
+        </span>
+    </div>
+</span>

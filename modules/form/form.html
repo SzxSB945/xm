@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+
+    
+    <link href="/static/lib.css" rel="stylesheet" />
+    <!-- 这里引用其他css文件 -->
+    <link href="/js/lib/layer/theme/default/layer.css" rel="stylesheet" />
+    <link href="css/form.css" rel="stylesheet" />
+    
+    <!--[if lt IE 9]>
+        <script type="text/javascript" src="js/html5shiv.min.js"></script>
+        <script type="text/javascript" src="js/respond.min.js"></script>
+    <![endif]-->
+
+    <!--[if lt IE 8]>
+        <script type="text/javascript" src="js/lib/json2.js"></script>
+    <![endif]-->
+</head>
+
+<body ms-controller="app" class="ms-controller">
+    <div class="container-fluid">
+        <wbr ms-widget="{is: 'ms-header', title: templateName}" />
+
+        <div class="row">
+            <form class="form-horizontal">
+                <div class="form-group" ms-for="item in @formTemplate.items">
+                    <label class="col-xs-2 control-label">
+                        <span style="color: red;" ms-if="@item.isMustField">*</span>
+                        <span ms-html="@item.itemTitle"></span><span ms-if="@item.itemTitle.length != 0">：</span>
+                        <i class="info iconfont icon-question" ms-if="@item.alertWinInfo.length" ms-click="@showInfo(@item)"></i>
+                    </label>
+                    <div class="col-xs-7">
+                        <span ms-for="control in @item.controls">
+                            <span ms-if="@control.controlType == 'ms-input'">
+                                <wbr ms-widget="{is: 'ms-input', id: @control.id, name: @control.name, onReady: @widgetReady, value: @control.value, validate: @control.validateRule }"/>
+                            </span>
+                            <span ms-if="@control.controlType == 'ms-radio'">
+                                <wbr ms-widget="{is: 'ms-radio', id: @control.id, name: @control.name, onReady: @widgetReady, options: @control.options}"/>
+                            </span>
+                            <span ms-if="@control.controlType == 'ms-checkbox'">
+                                <wbr ms-widget="{is: 'ms-checkbox', $id: @control.id, id: @control.id, name: @control.name, onReady: @widgetReady, options: @control.options }"/>
+                            </span>
+                            <span ms-if="@control.controlType == 'ms-select'">
+                                <wbr ms-widget="{is: 'ms-select', id: @control.id, name: @control.name, onReady: @widgetReady, defaultSelectOption: @control.defaultSelectOption, value: @control.value, options: @control.options }"/>
+                            </span>
+                            <span ms-if="@control.controlType == 'ms-custom'" ms-html="@control.content"></span>
+                        </span>
+                        <span class="end-of-line-info" ms-if="@item.endOfLineInfo.length != 0" ms-html="@item.endOfLineInfo"></span>
+                    </div>
+                </div>
+
+                <div class="col-sm-10 col-md-push-2">
+                    <div class="btn btn-ok" ms-click="@submit" data-auth-writable><span data-lang="ok">确定</span></div>
+                    <div class="btn btn-cancel" ms-click="@cancel" ms-if="!@formTemplate.hideCancelButton"><span data-lang="cancel">取消</span></div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="/js/config.js"></script>
+    <script type="text/javascript" src="/js/lib/LAB.min.js"></script>
+    <script type="text/javascript" src="/js/load.js"></script>
+    <script type="text/javascript">
+        // 这里引用其他js文件
+        $LAB.queueScript("/js/lib/layer/layer.min.js")
+        .queueScript("js/form-render.js")
+        .runQueue();
+    </script>
+</body>
+
+</html>

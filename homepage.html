@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="format-detection" content="telephone=no,email=no,address=no">
+    <title data-lang="systemName">迅时OM8000语音网关系统</title>
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    
+    <link href="/static/lib.css" rel="stylesheet" />
+    <!-- 这里引用其他css文件 -->
+    <link href="/js/lib/jquery.contextMenu/jquery.contextMenu.min.css" rel="stylesheet" />
+    <link href="/css/homepage.css" rel="stylesheet" />
+
+    <!--[if lt IE 9]>
+        <script type="text/javascript" src="js/html5shiv.min.js"></script>
+        <script type="text/javascript" src="js/respond.min.js"></script>
+    <![endif]-->
+
+    <!--[if lt IE 8]>
+        <script type="text/javascript" src="js/lib/json2.js"></script>
+    <![endif]-->
+
+    <style type="text/css">
+        /* 修复在firefox下，页面开始加载时闪现出页面中的花括号的问题 */
+        .ms-controller {
+            visibility: hidden;
+        }
+    </style>
+</head>
+
+<body ms-controller="app" class="ms-controller">
+    <div class="header">
+        <div class="left" ms-mouseenter="@showStartMenu()" ms-mouseleave="@hideStartMenu(true)">
+            <div class="inner">
+                <div class="button">
+                    <span class="iconfont icon-list"></span>
+                    <span class="ml-5">{{@mainMenu.name}}</span>
+                </div>
+                <div class="caret-container">
+                    <span class="iconfont icon-caret"></span>
+                </div>
+            </div>
+
+            <div class="menu-wrapper start-menu" ms-if="@isStartMenuShow == true">
+                <ul>
+                    <li class="menu" ms-for="menu in @menus" ms-click="@changeLeftMenu(@menu)" ms-mouseenter="@showStartSubmenu($event)">
+                        <span class="icon"><i ms-class="@menu.icon"></i></span>{{@menu.name}}
+                        
+                        <div class="menu-wrapper sub" ms-if="@menu.submenu && @menu.submenu.length">
+                            <ul>
+                                <li class="menu" ms-for="smenu in @menu.submenu">
+                                    <div class="bg"></div>
+                                    <span class="icon"><i ms-class="@smenu.icon"></i></span>
+                                    <div class="title" ms-click="@clickStartMenu(@menu, @smenu, $event)">{{@smenu.name}}</div>
+
+                                    <ul class="sub2" ms-if="@smenu.submenu && @smenu.submenu.length">
+                                        <li ms-for="smenu2 in @smenu.submenu" ms-click="@clickStartMenu(@menu, @smenu2, $event)">
+                                            <span class="icon"><i ms-class="@smenu2.icon"></i></span>{{@smenu2.name}}
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="middle">
+            <ul class="tabs">
+                <li ms-for="tab in @tabs" ms-class="{active: @tab.isActive}" ms-attr="{ 'data-tab-id': @tab.id }" ms-click="@switchTab(@tab, false)" ms-if="!@tab.isRemoved">
+                    {{@tab.name}}
+                    <i class="iconfont icon-close close" ms-click="@closeTab(@tab, $event)"></i>
+                </li>
+            </ul>
+        </div>
+
+        <div class="right">
+            <div class="button-group">
+                <ul>
+                    <li>
+                        <div class="wrapper link-1" ms-click="@logout" ms-mouseenter="@showTip('.link-1', 'exit', $event)" ms-mouseleave="@hideTip($event)"><i class="iconfont icon-exit"></i></div>
+                    </li>
+                    <li>
+                        <div class="wrapper link-2" ms-click="@restart" ms-mouseenter="@showTip('.link-2', 'restart', $event)" ms-mouseleave="@hideTip($event)"><i class="iconfont icon-lvzhou_zhongqi"></i></div>
+                    </li>
+                    <li>
+                        <a class="wrapper link-3" href="http://www.newrocktech.com/support/" target="_blank" ms-mouseenter="@showTip('.link-3', 'contactUS', $event)" ms-mouseleave="@hideTip($event)"><i class="iconfont icon-htmal5icon05"></i></a>
+                    </li>
+                    <li>
+                        <div class="wrapper link-4" ms-click="@showProductInfo" ms-mouseenter="@showTip('.link-4', 'productInfo', $event)" ms-mouseleave="@hideTip($event)"><i class="iconfont icon-ijian"></i></div>
+                    </li>
+                </ul>
+            </div>
+            <div class="search-box">
+                <input type="text" ms-duplex="@keyword" ms-input="@onSearchInput($event)" ms-click="@clickSearchInput($event)">
+                <div class="search"><i class="iconfont icon-search" ms-click="@onClickSearchButton"></i></div>
+                <div class="search-autocomplete" ms-if="@showAutocomplete">
+                    <ul>
+                        <li ms-for="result in @searchResult" ms-click="@clickAutoComplete(@result.menu, $event)">
+                            <span class="title" ms-html="@result.title"></span><span>-</span><span ms-html="@result.category"></span>
+                        </li>
+                    </ul>
+                    <div class="total"><span data-lang="homepageMsg1">共找到</span>{{@searchResult.length}}<span data-lang="homepageMsg2">个功能</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="head-info">
+        <div class="left-border"></div>
+        <div class="row">
+            <div class="left col col-xs-2">
+                <span ms-class="@mainMenu.icon"></span>
+                <span ms-html="@mainMenu.name"></span>
+            </div>
+            <div class="middle col col-xs-8">
+                <a href="javascript:;" ms-click="@headInfoClick" ms-html="@headInfo"></a>
+            </div>
+            <div class="right col col-xs-2">
+                <div class="refresh-button" ms-click="@refreshCurrentTab">
+                    <span data-lang="refresh">刷新</span>
+                    <span class="iconfont icon-refresh"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main">
+        <div class="left">
+            <div class="logo"><img src="/img/logo.png"></div>
+
+            <div class="menu-wrapper">
+                <ul>
+                    <li class="menu" ms-for="menu in @leftMenu" ms-attr="{'data-menu-id': @menu.id}">
+                        <div class="bg"></div>
+                        <div class="indicate-icon"></div>
+                        <span class="icon"><i ms-class="@menu.icon"></i></span>
+                        <div class="title main-title" ms-click="@_openTab(@menu, $event)">{{@menu.name}}</div>
+                        
+                        <div class="sub2" ms-if="@menu.submenu && @menu.submenu.length">
+                            <div class="menu" ms-for="submenu in @menu.submenu" ms-click="@_openTab(@submenu, $event)" 
+                                ms-attr="{'data-menu-id': @submenu.id}">
+                                <div class="indicate-icon"></div>
+                                <span class="icon"><i ms-class="@submenu.icon"></i></span>
+                                <span class="title" ms-text="@submenu.name"></span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="right">
+            <div class="tab-pane" ms-for="tab in @tabs" ms-class="{active: @tab.isActive}" ms-if="!@tab.isRemoved">
+                <iframe ms-attr="{src: @tab.url, 'data-menu-id': @tab.menu.id}"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/html" id="product-info-tpl">
+        <div class="row">
+            <div class="col-xs-4"><span data-lang="productInfo1">设备型号</span>:</div>
+            <div class="col-xs-8">{{#id640}}</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-4"><span data-lang="productInfo2">IP分机最大允许数</span>:</div>
+            <div class="col-xs-8">{{#id528}}</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-4"><span data-lang="productInfo3">SIP外线最大允许数</span>:</div>
+            <div class="col-xs-8">{{#id527}}</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-4"><span data-lang="productInfo4">软件版本</span>:</div>
+            <div class="col-xs-8">{{#id56}}</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-4"><span data-lang="productInfo5">硬件版本</span>:</div>
+            <div class="col-xs-8">{{#id57}}</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-4"><span data-lang="productInfo6">固件版本</span>:</div>
+            <div class="col-xs-8">{{#id1081}}</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-4"><span data-lang="productInfo7">MAC地址</span>:</div>
+            <div class="col-xs-8">{{#id7}}</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-4"><span data-lang="productInfo8">系统当前时间</span>:</div>
+            <div class="col-xs-8">{{#id70}}</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-4"><span data-lang="productInfo9">H码库版本</span>:</div>
+            <div class="col-xs-8">{{#hCode}}</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-4"><span data-lang="productInfo10">Web版本</span>:</div>
+            <div class="col-xs-8">{{#webVersion}}</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-4"><span data-lang="productInfo11">帮助信息</span>:</div>
+            <div class="col-xs-8"><a href="http://www.newrocktech.com" target="_blank">www.newrocktech.com</a></div>
+        </div>
+    </script>
+
+    <script type="text/javascript" src="/js/config.js"></script>
+    <script type="text/javascript" src="/js/lib/LAB.min.js"></script>
+    <script type="text/javascript" src="/js/load.js"></script>
+    <script type="text/javascript">
+        // 这里引用其他js文件
+        $LAB
+        .queueScript("/js/lib/jquery.contextMenu/jquery.contextMenu.min.js")
+        .queueScript("/js/lib/jquery.contextMenu/jquery.ui.position.min.js")
+        .queueScript("/js/menu.js")
+        .queueScript("/js/homepage.js")
+        .runQueue();
+    </script>
+</body>
+</html>

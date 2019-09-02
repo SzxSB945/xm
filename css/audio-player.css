@@ -1,0 +1,19 @@
+@charset "utf-8";
+
+.audio-player {
+    height: 40px;
+    line-height: 40px !important;
+    padding: 0 10px;
+    overflow: hidden;
+}
+
+.audio-player .iconfont {
+    cursor: pointer;
+    font-size: 24px;
+}
+
+.audio-player .play-control,
+.audio-player .duration-container {
+    margin: 0 4px;
+    float: left;
+}

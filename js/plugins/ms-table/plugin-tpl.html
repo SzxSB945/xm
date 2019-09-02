@@ -1,0 +1,189 @@
+<div class="ms-table">
+    <div class="table-container">
+        <table class="table table-striped table-header">
+            <thead>
+                <tr>
+                    <th ms-for="column in @tableDefine.columns" ms-css="{width: @calculateColumnWidth(column)}">
+                        <span ms-if="@column.type == 'sn'" ms-html="@column.title"></span>
+                        <span ms-if="@column.type == 'checkbox'"><input type="checkbox" ms-duplex-checked="@allRowSelected" data-duplex-changed="@toggleAllSelect($event)"></span>
+                        <span ms-if="@column.type == 'field'" ms-click="@toggleDataShow(@column)">
+                            <span ms-html="@column.title"></span>
+                            <span class="iconfont icon-yanjing ml-5" ms-if="@column.canToggleShowRawData && @column.showRawData"></span>
+                            <span class="iconfont icon-biyanjing ml-5" ms-if="@column.canToggleShowRawData && !@column.showRawData"></span>
+                        </span>
+                        <span ms-if="@column.type == 'button'" ms-html="@column.title"></span>
+                        <span ms-if="@column.type == 'checkbox2'" ms-html="@column.title"></span>
+                        <div class="line"></div>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+
+        <table class="table table-striped table-header" style="z-index: 7;">
+            <thead>
+                <tr>
+                    <th ms-for="(index, column) in @tableDefine.columns" ms-css="{width: @calculateColumnWidth(column)}">
+                        <span ms-if="@column.type == 'sn'" ms-html="@column.title"></span>
+                        <span ms-if="@column.type == 'checkbox'"><input type="checkbox"></span>
+                        <span ms-if="@column.type == 'field'">
+                            <span ms-html="@column.title"></span>
+                            <span class="iconfont icon-yanjing ml-5" ms-if="@column.canToggleShowRawData && @column.showRawData"></span>
+                            <span class="iconfont icon-biyanjing ml-5" ms-if="@column.canToggleShowRawData && !@column.showRawData"></span>
+                        </span>
+                        <span ms-if="@column.type == 'button'" ms-html="@column.title"></span>
+                        <span ms-if="@column.type == 'checkbox2'" ms-html="@column.title"></span>
+                        <div class="line"></div>
+                        <div class="bg-shadow" ms-if="@index == 0"></div>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+
+        <div class="table-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th ms-for="column in @tableDefine.columns" ms-css="{width: @calculateColumnWidth(column)}">
+                            <span ms-if="@column.type == 'sn'" ms-html="@column.title"></span>
+                            <span ms-if="@column.type == 'checkbox'"><input type="checkbox"></span>
+                            <span ms-if="@column.type == 'field'">
+                                <span ms-html="@column.title"></span>
+                                <span class="iconfont icon-yanjing ml-5" ms-if="@column.canToggleShowRawData && @column.showRawData"></span>
+                                <span class="iconfont icon-biyanjing ml-5" ms-if="@column.canToggleShowRawData && !@column.showRawData"></span>
+                            </span>
+                            <span ms-if="@column.type == 'button'" ms-html="@column.title"></span>
+                            <span ms-if="@column.type == 'checkbox2'" ms-html="@column.title"></span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody ms-attr="{id: @tbodyId}">
+                    <tr ms-for="(index, row) in @tableDefine.rowData" ms-if="!@row._isRemove" ms-click="@clickRow(row, $event)" 
+                        ms-class="@row._isSelected ? 'active' : ''">
+                        <td ms-for="column in @tableDefine.columns" ms-html="@renderColumn(@column, @row)" ms-attr="{class: @column.field + '-wrapper'}" 
+                            ms-click="@preventColumnClick($event, @column)"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="pull-left button-container">
+        <div class="btn btn-ok" data-lang="save" ms-if="@tableDefine.saveButton" ms-click="@clickSaveButton" data-auth-writable>保存</div>
+    </div>
+
+    <div class="pull-right pagination-container" aria-label="Page navigation">
+        <img ms-if="@tableDefine.disablePagination && @isLoading" class="ml-5" src="/js/lib/layer/theme/default/loading-2.gif" style="width: 16px; height: 16px;" />
+
+        <ul ms-if="!@tableDefine.disablePagination" class="pagination">
+            <li ms-click="prevPage">
+                <a href="#" aria-label="Previous" class="prev" ms-class="!@hasPrevPage ? 'disabled' : ''">
+                    <span aria-hidden="true" data-lang="prevPage">上一页</span>
+                </a>
+            </li>
+            <li ms-for="p in @getFirstPagination()" ms-click="goPage(p)" ms-class="p == page ? 'active' : ''"><a href="#">{{p}}</a></li>
+            
+            <li ms-if="@getLastPagination().length != 0 && @getLastPagination()[0] > 4"><a href="javascript:;">...</a></li>
+
+            <li ms-for="p in @getLastPagination()" ms-click="goPage(p)" ms-class="p == page ? 'active' : ''"><a href="#">{{p}}</a></li>
+            
+            <li ms-click="nextPage">
+                <a href="#" aria-label="Next" class="next" ms-class="!@hasNextPage ? 'disabled' : ''">
+                    <span aria-hidden="true" data-lang="nextPage">下一页</span>
+                </a>
+            </li>
+        </ul>
+        <div class="pull-right" ms-if="!@tableDefine.disablePagination" style="white-space: nowrap; width: auto;">
+            <span data-lang="paginationMsg1">每页显示</span>
+            <select ms-duplex="@tableDefine.pageSize" ms-change="@pageSizeChange($event)">
+                <!-- <option>5</option>
+                <option>10</option>
+                <option>20</option> -->
+                <option>200</option>
+                <option>150</option>
+                <option>100</option>
+                <option>50</option>
+            </select> <span data-lang="slip">条</span>
+            <img ms-if="@isLoading" class="ml-5" src="/js/lib/layer/theme/default/loading-2.gif" style="width: 16px; height: 16px;" />
+        </div>
+    </div>
+
+    <script type="text/html" id="column-render-tpl">
+        {{if column.type == "sn"}}
+        {{@pageCalculate}}
+        {{else if column.type == "checkbox"}}
+        <input type="checkbox" data-control-type="checkbox" ms-duplex-checked="@row._isSelected" data-duplex-changed="@rowSelectChange($event)">
+        {{else if column.type == "checkbox2"}}
+        <input type="checkbox" data-control-type="checkbox2" ms-duplex-checked="@row[column.field]" data-duplex-changed="@checkbox2Change(@row, @column)">
+        {{else if column.type == "field"}}
+        <div ms-if="(!@isRowColumnEditable(@row, @column) && @row['_isEditing']) || !@row['_isEditing']"
+            class="column-data">
+            <span ms-if="!column.showRawData" ms-attr="{title: @getColumnTitle(@row, @column)}" ms-html="@getColumnData(@row, @column)"></span>
+            <span ms-if="column.showRawData" ms-attr="{title: @getColumnTitle(@row, @column)}" ms-html="@row[column.field]"></span>
+        </div>
+        <div ms-if="@isRowColumnEditable(@row, @column) && @row['_isEditing']">
+            <span ms-if="@column['controlType'] == 'ms-input'">
+                <wbr ms-widget="{is: 'ms-input', name: @column.field, value: @row[column.field], onReady: @widgetReady, onDispose: @widgetDispose}" />
+            </span>
+            <span ms-if="@column['controlType'] == 'ms-ipv4'">
+                <wbr ms-widget="{is: 'ms-ipv4', name: @column.field, value: @row[column.field], onReady: @widgetReady, onDispose: @widgetDispose}" />
+            </span>
+            <span ms-if="@column['controlType'] == 'ms-ipv4-range'">
+                <wbr ms-widget="{is: 'ms-ipv4-range', name: @column.field, value: @row[column.field], onReady: @widgetReady, onDispose: @widgetDispose}" />
+            </span>
+            <span ms-if="@column['controlType'] == 'ms-input-range'">
+                <wbr ms-widget="{is: 'ms-input-range', name: @column.field, value: @row[column.field], onReady: @widgetReady, onDispose: @widgetDispose}" />
+            </span>
+            <span ms-if="@column['controlType'] == 'ms-select'">
+                <wbr ms-widget="{is: 'ms-select', name: @column.field, value: @row[column.field], options: @processControlData(@column.controlDefine.data, @row), onChange: @valueChange, onReady: @widgetReady, onDispose: @widgetDispose}" />
+            </span>
+            <span ms-if="@column['controlType'] == 'ms-datetime'">
+                <wbr ms-widget="{is: 'ms-datetime', name: @column.field, value: @row[column.field], type: @column.controlDefine.type, onReady: @widgetReady, onDispose: @widgetDispose}" />
+            </span>
+            <span ms-if="@column['controlType'] == 'ms-datetime-range'">
+                <wbr ms-widget="{is: 'ms-datetime-range', name: @column.field, value: @row[column.field], type: @column.controlDefine.type, onReady: @widgetReady, onDispose: @widgetDispose}" />
+            </span>
+            <span ms-if="@column['controlType'] == 'ms-sip-select'">
+                <wbr ms-widget="{is: 'ms-sip-select', name: @column.field, value: @row[column.field], singleSelect: @column.singleSelect, onReady: @widgetReady, onDispose: @widgetDispose}" />
+            </span>
+            <span ms-if="@column['controlType'] == 'ms-ext-select'">
+                <wbr ms-widget="{is: 'ms-ext-select', name: @column.field, value: @row[column.field], singleSelect: @column.singleSelect, onReady: @widgetReady, onDispose: @widgetDispose}" />
+            </span>
+            <span ms-if="@column['controlType'] == 'ms-ext-call-select'">
+                <wbr ms-widget="{is: 'ms-ext-call-select', name: @column.field, value: @row[column.field], singleSelect: @column.singleSelect, onReady: @widgetReady, onDispose: @widgetDispose}" />
+            </span>
+            <span ms-if="@column['controlType'] == 'ms-ext-cellphone-select'">
+                <wbr ms-widget="{is: 'ms-ext-cellphone-select', name: @column.field, value: @row[column.field], singleSelect: @column.singleSelect, onReady: @widgetReady, onDispose: @widgetDispose}" />
+            </span>
+            <span ms-if="@column['controlType'] == 'dynamic'">
+                <span ms-if="@getControlType(@row, @column, @row[column.field]) == 'ms-input'">
+                    <wbr ms-widget="{is: 'ms-input', name: @column.field, value: @row[column.field], onReady: @widgetReady, onDispose: @widgetDispose}" />
+                </span>
+                <span ms-if="@getControlType(@row, @column, @row[column.field]) == 'ms-sip-select'">
+                    <wbr ms-widget="{is: 'ms-sip-select', name: @column.field, value: @row[column.field], singleSelect: @column.singleSelect, onReady: @widgetReady, onDispose: @widgetDispose}" />
+                </span>
+                <span ms-if="@getControlType(@row, @column, @row[column.field]) == 'ms-ext-select'">
+                    <wbr ms-widget="{is: 'ms-ext-select', name: @column.field, value: @row[column.field], singleSelect: @column.singleSelect, onReady: @widgetReady, onDispose: @widgetDispose}" />
+                </span>
+                <span ms-if="@getControlType(@row, @column, @row[column.field]) == 'ms-ext-cellphone-select'">
+                    <wbr ms-widget="{is: 'ms-ext-cellphone-select', name: @column.field, value: @row[column.field], singleSelect: @column.singleSelect, onReady: @widgetReady, onDispose: @widgetDispose}" />
+                </span>
+                <span ms-if="@getControlType(@row, @column, @row[column.field]) == 'ms-ext-call-select'">
+                    <wbr ms-widget="{is: 'ms-ext-call-select', name: @column.field, value: @row[column.field], singleSelect: @column.singleSelect, onReady: @widgetReady, onDispose: @widgetDispose}" />
+                </span>
+            </span>
+        </div>
+        {{else if column.type == "button"}}
+        <div ms-class="'buttons'" style="height: 36px;">
+            <span ms-for="button in @column.buttons">
+                <span ms-if="@button.type == 'text'" 
+                    ms-class="'button text'" 
+                    ms-click="@buttonClick(@button, @row, $event, this)" 
+                    ms-html="@button.text">
+                </span>
+                <span ms-if="@button.type == 'icon'" ms-class="['button', 'icon', @getButtonIconClass(@row, @button)]"
+                    ms-click="@buttonClick(@button, @row, $event, this)"></span>
+            </span>
+        </div>
+        {{/if}}
+    </script>
+</div>

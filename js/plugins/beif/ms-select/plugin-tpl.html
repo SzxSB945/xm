@@ -1,0 +1,6 @@
+<div class="ms-select">
+    <select ms-attr="{name: @name, id: @_id}" ms-duplex="@value" autocomplete="off" ms-change="@handleChange($event)">
+        <!-- <option value="" ms-if="@defaultSelectOption">请选择</option> -->
+        <option ms-for="opt in @options" ms-attr="{value: @opt.value}" ms-html="@opt.text"></option>
+    </select>
+</div>

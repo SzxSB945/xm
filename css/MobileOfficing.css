@@ -1,0 +1,177 @@
+﻿body {
+    height: 100%;
+    width: 100%;
+    background: #f3f3f9;
+    background-size: 100% 100%;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+.relative {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.top-background {
+    position: absolute;
+    height: 80px;
+    background: #000;
+    filter: alpha(opacity=0.3);
+    top: 0;
+    opacity: 0.3;
+    left: 0;
+    right: 0;
+}
+
+.top-data {
+    position: absolute;
+    height: 80px;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+.top-title {
+    color: #fff;
+    line-height: 80px;
+    font-size: 30px;
+    padding-left: 3%;
+    letter-spacing: 1px;
+    float: left;
+}
+
+.top-right {
+    float: right;
+    height: 100%;
+}
+
+    .top-right span {
+        line-height: 80px;
+        color: #fff;
+        margin-right: 30px;
+        letter-spacing: 1px;
+    }
+
+        .top-right span img {
+            margin-right: 10px;
+        }
+
+.body-background {
+    position: absolute;
+    background: #000;
+    filter: alpha(opacity=0.7);
+    top: 80px;
+    opacity: 0.7;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.body-box {
+    position: absolute;
+    top: 80px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.body-data {
+    /*position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding-top: 5%;
+        overflow: auto;*/
+}
+
+.body-row{
+    width: 100%;
+    height: 280px;
+}
+
+.data-row1 div:first-child, .data-row2 div:first-child, .data-row3 div:first-child {
+    height: 70%;
+    width: 100%;
+    text-align: center;
+    margin: auto 0;
+    line-height: 300px;
+}
+
+.data-row1 div:last-child, .data-row2 div:last-child, .data-row3 div:last-child {
+    text-align: center;
+    font-size: 16px;
+}
+
+.body-data .row-box1 {
+    position: absolute;
+    width: 250px;
+    height: 225px;
+    filter: alpha(opacity=0.4);
+    opacity: 0.4;
+    background: #000;
+    border-radius: 30px;
+    left: 14%;
+}
+
+.body-data .row-box2 {
+    position: absolute;
+    width: 250px;
+    height: 225px;
+    filter: alpha(opacity=0.4);
+    opacity: 0.4;
+    background: #000;
+    border-radius: 30px;
+    left: 44%;
+}
+
+
+.body-data .row-box3 {
+    position: absolute;
+    width: 250px;
+    height: 225px;
+    filter: alpha(opacity=0.4);
+    opacity: 0.4;
+    background: #000;
+    border-radius: 30px;
+    left: 74%;
+}
+
+
+
+.body-data .data-row1 {
+    /*position: absolute;
+    left: 0;*/
+    float:left;
+    width: 33%;
+    background: #ffffff;
+    border: 0.5px solid #ebedf0;
+    color: #9b9b9d;
+    height: 280px;
+}
+
+.body-data .data-row2 {
+        /*position: absolute;
+    left: 0;*/
+    float:left;
+    width: 33%;
+    background: #ffffff;
+    border: 0.5px solid #ebedf0;
+    color: #9b9b9d;
+    height: 280px;
+}
+
+.body-data .data-row3 {
+    float:left;
+    width: 33%;
+    background: #ffffff;
+    border: 0.5px solid #ebedf0;
+    color: #9b9b9d;
+    height: 280px;
+}
+
+    .body-data .data-row1:hover, .body-data .data-row2:hover, .body-data .data-row3:hover {
+        background: #e8e8e8;
+        color: #666666;
+    }

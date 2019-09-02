@@ -1,0 +1,486 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>表格构建器</title>
+
+    <link href="/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- 这里引用其他css文件 -->
+    <link href="/form-builder/js/codemirror/codemirror.css" rel="stylesheet" />
+    <link href="css/builder.css" rel="stylesheet" />
+
+    <!--[if lt IE 9]>
+        <script type="text/javascript" src="js/html5shiv.min.js"></script>
+        <script type="text/javascript" src="js/respond.min.js"></script>
+    <![endif]-->
+
+    <!--[if lt IE 8]>
+        <script type="text/javascript" src="js/lib/json2.js"></script>
+    <![endif]-->
+</head>
+
+<body id="app" ms-controller="app" class="ms-controller">
+    <div class="container">
+        <div class="page-header">
+            <h1>表格构建器 <small>v0.1.0</small></h1>
+        </div>
+
+        <div class="row tool-header">
+            <div class="btn btn-primary pull-left" ms-click="@createTable" style="margin-right: 12px;">新建表格</div>
+            <div class="dropdown pull-left">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="true">
+                    加载表格
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    <li>
+                        <div ms-for="tdata in @tableData">
+                            <div class="title">{{tdata.category}}</div>
+                            <ul>
+                                <li ms-for="table in @tdata.tables">
+                                    <a href="#" ms-click="@loadTable(@table)">{{@table.tableName}}
+                                        <!-- <span ms-if="@tdata.table.category">
+                                            <span style="padding: 0 5px;">-</span>{{@tdata.table.category}}
+                                        </span> -->
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="row">
+            <h3>基本配置</h3>
+        </div>
+
+        <div class="row">
+            <form class="form-horizontal">
+                <div class="row">
+                    <label class="col col-md-2 control-label">表格ID：</label>
+                    <div class="col col-md-4">
+                        <input type="text" class="form-control" readonly="readonly" ms-duplex="@table.tableId">
+                    </div>
+                    <label class="col col-md-2 control-label">表格名：</label>
+                    <div class="col col-md-4">
+                        <input type="text" class="form-control" ms-duplex="@table.tableName">
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col col-md-2 control-label">分页大小：</label>
+                    <div class="col col-md-4">
+                        <input type="text" class="form-control" ms-duplex="@table.pageSize">
+                    </div>
+                    <label class="col col-md-2 control-label">取消分页：</label>
+                    <div class="col col-md-4">
+                        <select class="form-control" ms-duplex="@table.disablePagination">
+                            <option value="false">否</option>
+                            <option value="true">是</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col col-md-2 control-label">是否可点击编辑：</label>
+                    <div class="col col-md-4">
+                        <select class="form-control" ms-duplex="@table.clickEdit">
+                            <option value="false">否</option>
+                            <option value="true">是</option>
+                        </select>
+                    </div>
+                    <label ms-if="@table.clickEdit == 'true'" class="col col-md-2 control-label">是否显示保存按钮：</label>
+                    <div ms-if="@table.clickEdit == 'true'" class="col col-md-4">
+                        <select class="form-control" ms-duplex="@table.saveButton">
+                            <option value="false">否</option>
+                            <option value="true">是</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col col-md-2 control-label" style="display: none;">隐藏分页信息：</label>
+                    <div class="col col-md-4" style="display: none;">
+                        <select class="form-control" ms-duplex-="@table.disablePageInfo">
+                            <option value="false">否</option>
+                            <option value="true">是</option>
+                        </select>
+                    </div>
+                    <label class="col col-md-2 control-label">表格分类：</label>
+                    <div class="col col-md-4">
+                        <input type="text" class="form-control" ms-duplex="@table.category">
+                    </div>
+                    <label class="col col-md-2 control-label">分页序号标识列：</label>
+                    <div class="col col-md-4">
+                        <input type="text" class="form-control" ms-duplex="@table.pageSNField">
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col col-md-2 control-label">表格自动加载数据：</label>
+                    <div class="col col-md-4">
+                        <label class="control-label">
+                            <input type="checkbox" ms-duplex-checked="@table.autoLoadData" />
+                        </label>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="row">
+            <h3>详细配置</h3>
+        </div>
+
+        <div class="row">
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#table-columns" aria-controls="table-columns" role="tab"
+                        data-toggle="tab">列定义配置</a></li>
+                <li role="presentation"><a href="#table-script" aria-controls="table-script" role="tab"
+                        data-toggle="tab">表格脚本</a></li>
+                <li role="presentation"><a href="#table-style" aria-controls="table-style" role="tab" data-toggle="tab">表格样式</a></li>
+                <li role="presentation"><a href="#table-template" aria-controls="table-template" role="tab" data-toggle="tab">表格模板</a></li>
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="table-columns">
+                    <div class="row">
+                        <div class="well">
+                            <div>点击回调脚本可用参数：row、event、table、columnIndex，
+                                可用函数：<span class="text-primary">table.startEditing(row)</span>进入编辑模式、
+                                <span class="text-primary">table.removeRow(row)</span>删除行、
+                                <span class="text-primary">table.copyRow(row)</span>复制行
+                            </div>
+                            <div>
+                                内容格式化脚本可用参数：value、row
+                            </div>
+                            <div>
+                                动态图标Class可用参数：row
+                            </div>
+                            <div>
+                                下拉选择选项数据可用参数：row
+                            </div>
+                            <div>
+                                普通多选列切换值回调脚本可用参数：row、value
+                            </div>
+                            <div>
+                                动态判断可编辑可用参数：row、value
+                            </div>
+                            <div>
+                                动态判断控件类型可用参数：row、value
+                            </div>
+                            <div>
+                                按钮列点击回调脚本可用参数：table、row
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="btn btn-default add-column" ms-click="@addColumn">增加列定义</div>
+                    </div>
+
+                    <div class="row text-center" ms-if="!@table.columns.length">
+                        暂无列定义
+                    </div>
+
+                    <div class="panel panel-primary" ms-for="column in @table.columns">
+                        <div class="panel-heading">列定义<div class="btn btn-default btn-xs pull-right" ms-click="@removeColumn(column)">移除</div>
+                        </div>
+                        <div class="panel-body">
+                            <form class="form-horizontal">
+                                <div class="row">
+                                    <label class="col col-md-2 control-label">列类型：</label>
+                                    <div class="col col-md-4">
+                                        <select class="form-control" ms-duplex="@column.type">
+                                            <option value="field">普通列</option>
+                                            <option value="button">按钮列</option>
+                                            <option value="sn">序号列</option>
+                                            <option value="checkbox">行多选列</option>
+                                            <option value="checkbox2">普通多选列</option>
+                                        </select>
+                                    </div>
+                                    <label class="col col-md-2 control-label">字段名：</label>
+                                    <div class="col col-md-4">
+                                        <input type="text" class="form-control" ms-duplex="@column.field">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label class="col col-md-2 control-label">列标题：</label>
+                                    <div class="col col-md-4">
+                                        <input type="text" class="form-control" ms-duplex="@column.title">
+                                    </div>
+                                    <label class="col col-md-2 control-label">列宽：</label>
+                                    <div class="col col-md-4">
+                                        <input type="text" class="form-control" ms-duplex="@column.width">
+                                    </div>
+                                </div>
+
+                                <!-- 控件类型为普通多选列 -->
+                                <div class="row" ms-if="@column.type == 'checkbox2'">
+                                    <label class="col col-md-2 control-label">是否单选：</label>
+                                    <div class="col col-md-10">
+                                        <label class="control-label">
+                                            <input type="checkbox" ms-duplex-checked="@column.singleSelect" />
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="row" ms-if="@column.type == 'checkbox2'">
+                                    <label class="col col-md-2 control-label">切换值回调脚本：</label>
+                                    <div class="col col-md-10">
+                                        <textarea class="form-control" rows="5" ms-duplex="@column.valueChange"></textarea>
+                                    </div>
+                                </div>
+
+                                <!-- 控件类型为普通列 -->
+                                <div class="row" ms-if="@column.type == 'field'">
+                                    <label class="col col-md-2 control-label">是否可切换显示(<span class="iconfont icon-yanjing"></span>)：</label>
+                                    <div class="col col-md-4">
+                                        <select class="form-control" ms-duplex="@column.canToggleShowRawData">
+                                            <option value="false">不可切换</option>
+                                            <option value="true">可切换</option>
+                                        </select>
+                                    </div>
+                                    <label class="col col-md-2 control-label">是否可编辑：</label>
+                                    <div class="col col-md-4">
+                                        <select class="form-control" ms-duplex="@column.isEditable">
+                                            <option value="false">不可编辑</option>
+                                            <option value="true">可编辑</option>
+                                            <option value="dynamic">动态判断</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row" ms-if="@column.type == 'field'">
+                                    <label class="col col-md-2 control-label" ms-if="@column.isEditable == 'true' || @column.isEditable == 'dynamic'">控件类型：</label>
+                                    <div class="col col-md-4" ms-if="@column.isEditable == 'true' || @column.isEditable == 'dynamic'">
+                                        <select class="form-control" ms-duplex="@column.controlType">
+                                            <option value=""></option>
+                                            <option value="ms-input">文本输入(ms-input)</option>
+                                            <option value="ms-input-range">文本输入范围(ms-input-range)</option>
+                                            <option value="ms-ipv4">IP v4(ms-ipv4)</option>
+                                            <option value="ms-ipv4-range">IP v4范围(ms-ipv4-range)</option>
+                                            <option value="ms-select">下拉选择(ms-select)</option>
+                                            <option value="ms-datetime">日期时间(ms-datetime)</option>
+                                            <option value="ms-datetime-range">日期时间范围(ms-datetime-range)</option>
+                                            <option value="ms-sip-select">外线号码选择(ms-sip-select)</option>
+                                            <option value="ms-ext-select">分机号码选择(ms-ext-select)</option>
+                                            <option value="ms-ext-call-select">分机/来电接听组选择(ms-ext-call-select)</option>
+                                            <option value="ms-ext-cellphone-select">分机手机号码选择(ms-ext-cellphone-select)</option>
+                                            <option value="dynamic">动态判断</option>
+                                        </select>
+                                    </div>
+
+                                    <div ms-if="(@column.isEditable == 'true' || @column.isEditable == 'dynamic') && (@column.controlType == 'ms-input' || @column.controlType == 'ms-input-range')">
+                                        <label class="col col-md-2 control-label">校验规则类型：</label>
+                                        <div class="col col-md-4">
+                                            <select class="form-control" ms-duplex="@column.validateType">
+                                                <option value=""></option>
+                                                <option value="required">必填</option>
+                                                <option value="custom">自定义</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row" ms-if="@column.type == 'field' && (@column.isEditable == 'true' || @column.isEditable == 'dynamic') && (@column.controlType == 'ms-sip-select' || @column.controlType == 'ms-ext-select' || @column.controlType == 'ms-ext-cellphone-select' || @column.controlType == 'dynamic')">
+                                    <label class="col col-md-2 control-label">是否单选：</label>
+                                    <div class="col col-md-10">
+                                        <label class="control-label">
+                                            <input type="checkbox" ms-duplex-checked="@column.singleSelect" />
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="row" ms-if="@column.type == 'field' && (@column.isEditable == 'true' || @column.isEditable == 'dynamic') && (@column.controlType == 'ms-input' || @column.controlType == 'ms-input-range') && (@column.validateType == 'regex' || @column.validateType == 'custom')">
+                                    <label class="col col-md-2 control-label">校验规则：</label>
+                                    <div class="col col-md-10">
+                                        <textarea class="form-control" rows="3" ms-duplex="@column.validateRule"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="row" ms-if="@column.type == 'field' && (@column.isEditable == 'true' || @column.isEditable == 'dynamic') && (@column.controlType == 'ms-input' || @column.controlType == 'ms-input-range') && (@column.validateType == 'regex' || @column.validateType == 'custom')">
+                                    <label class="col col-md-2 control-label">校验未通过提示信息：</label>
+                                    <div class="col col-md-10">
+                                        <textarea class="form-control" rows="1" ms-duplex="@column.validateMsg"></textarea>
+                                    </div>
+                                </div>
+                                
+                                <div class="row" ms-if="(@column.isEditable == 'true' || @column.isEditable == 'dynamic') && (@column.controlType == 'ms-datetime' || @column.controlType == 'ms-datetime-range')">
+                                    <label class="col col-md-2 control-label">日期控件类型：</label>
+                                    <div class="col col-md-4">
+                                        <select class="form-control" ms-duplex="@column.controlDefine.type">
+                                            <option value=""></option>
+                                            <option value="datetime">日期时间</option>
+                                            <option value="date">日期</option>
+                                            <option value="time">时间</option>
+                                            <option value="year">年</option>
+                                            <option value="month">月</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="row" ms-if="(@column.isEditable == 'true' || @column.isEditable == 'dynamic') && @column.controlType == 'ms-select'">
+                                    <label class="col col-md-2 control-label">下拉选择选项数据：<br/>
+                                        <span style="font-weight: normal;">（示例：return [{ "value": "0", "text": "TCP" }, { "value": "1", "text": "UDP" }]）</span>
+                                    </label>
+                                    <div class="col col-md-10">
+                                        <textarea class="form-control" rows="5" ms-duplex="@column.controlDefine.data"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="row" ms-if="@column.isEditable == 'dynamic'">
+                                    <label class="col col-md-2 control-label">动态判断可编辑：</label>
+                                    <div class="col col-md-10">
+                                        <textarea class="form-control" rows="5" ms-duplex="@column.editableFunction"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="row" ms-if="@column.controlType == 'dynamic'">
+                                    <label class="col col-md-2 control-label">动态判断控件类型：</label>
+                                    <div class="col col-md-10">
+                                        <textarea class="form-control" rows="5" ms-duplex="@column.controlTypeFunction"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="row" ms-if="@column.type == 'field'">
+                                    <label class="col col-md-2 control-label">显示内容格式化脚本：<br/><span style="font-weight: normal;">（脚本中可用参数：value、row）</span></label>
+                                    <div class="col col-md-10">
+                                        <textarea class="form-control" rows="6" ms-duplex="@column.formatter"></textarea>
+                                    </div>
+                                </div>
+
+                                <!-- 控件类型为按钮 -->
+                                <div class="row" ms-if="@column.type == 'button'">
+                                    <div class="btn btn-sm btn-default" ms-click="@addButton(column)">增加按钮</div>
+                                </div>
+                                <div class="row text-center" ms-if="@column.type == 'button' && !@column.buttons.length">
+                                    暂无按钮
+                                </div>
+                                <div class="row" ms-if="@column.type == 'button'">
+                                    <ul class="list-group">
+                                        <li class="list-group-item" ms-for="button in @column.buttons">
+                                            <div class="row">
+                                                <div class="col col-md-12">
+                                                    <div class="btn btn-default btn-xs" ms-click="@removeButton(column, button)">移除</div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label class="col col-md-2 control-label">按钮类型：</label>
+                                                <div class="col col-md-4">
+                                                    <select class="form-control" ms-duplex="@button.type">
+                                                        <option value="icon">图标按钮</option>
+                                                        <option value="text">文本按钮</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col col-md-2" ms-if="@button.type == 'icon'">
+                                                    <select class="form-control" ms-duplex="@button.iconClassType">
+                                                        <option value="0">图标Class</option>
+                                                        <option value="1">动态图标Class</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col col-md-4" ms-if="@button.type == 'icon'">
+                                                    <input type="text" class="form-control" ms-duplex="@button.iconClass">
+                                                </div>
+
+                                                <label class="col col-md-2 control-label" ms-if="@button.type == 'text'">按钮文本：</label>
+                                                <div class="col col-md-4" ms-if="@button.type == 'text'">
+                                                    <input type="text" class="form-control" ms-duplex="@button.text">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label class="col col-md-2 control-label">点击回调脚本：</label>
+                                                <div class="col col-md-10">
+                                                    <textarea class="form-control" rows="6" ms-duplex="@button.click"></textarea>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="table-script">
+                    <div class="row">
+                        <div class="col col-md-12"><h4>表格数据获取脚本</h4></div>
+                        <div class="col col-md-12">
+                            <p class="well">
+                                脚本中可用参数：table（表格实例对象）、startIdx（加载的起始记录）、page（当前页码）、pageSize（每页记录数）、searchCondition（搜索条件）。
+                                获取完数据后调用 <span class="text-primary">table.setData([数据])</span> 设置数据。
+                            </p>
+                        </div>
+                        <div class="col col-md-12">
+                            <textarea class="form-control data-load-script" rows="30"></textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-12"><h4>表格数据总数获取脚本</h4></div>
+                        <div class="col col-md-12">
+                            <p class="well">
+                                脚本中可用参数：table（表格实例对象）。
+                                获取完数据后调用 <span class="text-primary">table.setTotal(总数)</span> 设置数据总数。
+                            </p>
+                        </div>
+                        <div class="col col-md-12">
+                            <textarea class="form-control total-load-script" rows="30"></textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-12"><h4>行点击执行脚本</h4></div>
+                        <div class="col col-md-12">
+                            <p class="well">
+                                脚本中可用参数：table（表格实例对象）、row（行数据）。
+                            </p>
+                        </div>
+                        <div class="col col-md-12">
+                            <textarea class="form-control click-row-script" rows="30"></textarea>
+                        </div>
+                    </div>
+                    <div class="row" ms-visible="@table.saveButton == 'true'">
+                        <div class="col col-md-12"><h4>保存按钮执行脚本</h4></div>
+                        <div class="col col-md-12">
+                            <p class="well">
+                                脚本中可用参数：table（表格实例对象）、modifiedRows（修改的行数据）。
+                            </p>
+                        </div>
+                        <div class="col col-md-12">
+                            <textarea class="form-control save-button-script" rows="30"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="table-style">
+                    <div class="row"><textarea class="form-control" rows="20"></textarea></div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="table-template">
+                    <div class="row"><textarea class="form-control" rows="20"></textarea></div>
+                    <div class="row">
+                        <div class="btn btn-primary pull-right" ms-click="@generateTable">生成表格模板</div>
+                        <!-- <div class="btn btn-default pull-right" ms-click="@parsetable" style="margin-right: 6px;">加载表单模板</div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-btns">
+            <div class="btn btn-default" ms-click="@addColumn">增加列定义</div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="/js/config.js"></script>
+    <script type="text/javascript" src="/js/lib/LAB.min.js"></script>
+    <script type="text/javascript" src="/js/load.js"></script>
+    <script type="text/javascript">
+        // 这里引用其他js文件
+        $LAB
+            .queueScript("/table-builder/js/codemirror/codemirror.js")
+            .queueScript("/table-builder/js/codemirror/javascript.js")
+            .queueScript("/table-builder/js/codemirror/css.js")
+            .queueWait()
+            .queueScript("js/builder.js")
+            .runQueue();
+    </script>
+</body>
+
+</html>
